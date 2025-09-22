@@ -2,18 +2,16 @@ import OpenAI from "openai"
 
 const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY ?? "",
-  baseURL: "https://demo-proxy.groqcloud.dev/openai/v1",
-  defaultHeaders: {
-    "Origin": "https://groq-stripe-mcp-chat.vercel.groqcloud.net"
-  }
+  baseURL: process.env.GROQ_BASE_URL || "https://api.groq.com/openai/v1",
+  defaultHeaders: process.env.CLIENT_ORIGIN ? {
+    "Origin": process.env.CLIENT_ORIGIN
+  } : {}
 })
 
 export async function POST(req: Request) {
   const { messages }: {
     messages: OpenAI.Responses.ResponseInput
   } = await req.json()
-
-  console.log("conversationHistory", JSON.stringify(messages, null, 2))
 
   // Set up SSE headers
   const headers = new Headers({

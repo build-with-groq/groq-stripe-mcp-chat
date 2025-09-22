@@ -12,7 +12,7 @@ import { ReasoningDisplay } from "@/components/reasoning-display"
 import { ToolCallDisplay } from "@/components/tool-call-display"
 import { MCPCallDisplay } from "@/components/mcp-call-display"
 import { MCPListToolsDisplay } from "@/components/mcp-list-tools-display"
-import { AlertTriangle, Send } from "lucide-react"
+import { AlertTriangle, Send, Github } from "lucide-react"
 import Image from "next/image"
 import {
   type ResponseInputItem,
@@ -99,12 +99,12 @@ const isAssistantMessage = (message: ResponseInputItem | ResponseOutputItem): bo
     return (message as any).role === "assistant"
   }
   // All output types are from the assistant
-  return message.type === "reasoning" || 
-         message.type === "function_call" || 
-         message.type === "mcp_call" || 
-         message.type === "mcp_list_tools" || 
-         message.type === "mcp_approval_request" ||
-         (message as any).type // catch any other output types
+  return message.type === "reasoning" ||
+    message.type === "function_call" ||
+    message.type === "mcp_call" ||
+    message.type === "mcp_list_tools" ||
+    message.type === "mcp_approval_request" ||
+    (message as any).type // catch any other output types
 }
 
 const renderOutputComponent = (message: ResponseOutputItem, options: RenderOutputOptions = {}) => {
@@ -135,7 +135,7 @@ const renderOutputComponent = (message: ResponseOutputItem, options: RenderOutpu
       return <MCPListToolsDisplay key={`mcp-tools-${output.id}`} item={output} />
     case "mcp_approval_request":
       const approvalStatus = approvalResponses?.get(output.id)
-      
+
       if (!onMcpApprovalDecision) {
         return (
           <div
@@ -193,10 +193,6 @@ export default function ChatInterface() {
     return responses
   }, [messages])
 
-  useEffect(() => {
-    console.log("messages", messages)
-  }, [messages])
-
   const isStreaming = status === "in_progress"
 
   const handleMcpApprovalDecision = useCallback(
@@ -223,12 +219,23 @@ export default function ChatInterface() {
 
   return (
     <div className="flex flex-col h-screen max-w-4xl mx-auto">
+      {/* Header with GitHub link */}
+      <a
+        href="https://github.com/build-with-groq/groq-stripe-mcp-chat"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="p-2 rounded-lg absolute top-4 right-4 hover:bg-muted/50 transition-colors text-muted-foreground hover:text-foreground"
+        aria-label="View source on GitHub"
+      >
+        <Github className="w-5 h-5" />
+      </a>
+
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && <WelcomeScreen />}
 
         {messages.map((message, index) => {
           const key = getMessageKey(message, index)
-          
+
           // Determine if this message should show the assistant icon
           const isCurrentAssistant = isAssistantMessage(message)
           const isPreviousAssistant = index > 0 ? isAssistantMessage(messages[index - 1]) : false
