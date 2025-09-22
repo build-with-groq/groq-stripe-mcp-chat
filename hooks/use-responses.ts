@@ -116,10 +116,6 @@ export const useResponses = (options?: UseResponsesOptions): UseResponsesResult 
         }
     }, []);
 
-    useEffect(() => {
-        console.log("messages", messages)
-    }, [messages])
-
     const sendMessage = useCallback(
         async (text: string, skipEmptyCheck = false) => {
             if (!text.trim() && !skipEmptyCheck) return;
