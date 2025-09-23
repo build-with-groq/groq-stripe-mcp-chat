@@ -37,7 +37,7 @@ This application demonstrates real-time AI chat capabilities using Groq API inte
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/groq-stripe-mcp-chat.git
+   git clone https://github.com/build-with-groq/groq-stripe-mcp-chat
    cd groq-stripe-mcp-chat
    ```
 
