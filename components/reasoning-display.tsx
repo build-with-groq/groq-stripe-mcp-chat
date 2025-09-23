@@ -22,7 +22,6 @@ export function ReasoningDisplay({ reasoning }: ReasoningDisplayProps) {
     return (summary?.length ? summary : undefined)?.join("\n\n") ?? "No reasoning details provided."
   }, [reasoning])
 
-  console.log("text", text);
   if (text.length === 0) return null;
 
   return (
