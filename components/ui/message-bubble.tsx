@@ -28,7 +28,7 @@ export function MessageBubble({ role, content, isStreaming = false, showIcon = t
         className={`max-w-[80%] p-4 ${role === "user" ? "bg-groq-orange text-white" : "bg-card text-card-foreground border-groq-orange/20"
           }`}
       >
-        <div className="prose prose-sm max-w-none list-disc">
+        <div className="prose prose-sm max-w-none list-disc break-words">
           <div className={`whitespace-pre-wrap leading-relaxed m-0 flex flex-col gap-2 ${role === "user" ? "text-white!" : ""}`}>
             <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeSanitize]}>
               {content}

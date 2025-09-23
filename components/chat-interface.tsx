@@ -54,7 +54,7 @@ const isReasoningMarkup = (value: string): boolean => {
   return trimmed.startsWith("<reasoning>") && trimmed.endsWith("</reasoning>")
 }
 
-const extractReasoningText = (value: string): string => {
+export const extractReasoningText = (value: string): string => {
   const trimmed = value.trim()
   return trimmed.replace(/^<reasoning>/, "").replace(/<\/reasoning>$/, "")
 }

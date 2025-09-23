@@ -28,7 +28,7 @@ export async function POST(req: Request) {
 
       try {
         const stream = await client.responses.create({
-          model: 'moonshotai/kimi-k2-instruct-0905',
+          model: 'openai/gpt-oss-120b',
           input: messages,
           tools: [
             {

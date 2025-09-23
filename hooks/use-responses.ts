@@ -34,9 +34,13 @@ export interface UseResponsesOptions {
     endpoint?: string;
 }
 
-const transformMessage = (message: ResponseSessionMessage): ResponseInputItem => {
+const transformMessage = (message: ResponseSessionMessage): ResponseInputItem | undefined => {
     if (message.kind === "input" || message.kind === "output") {
         if (message.item.type === "reasoning") {
+            const hasContent = message.item.content?.some((m) => m.text !== "");
+            if (!hasContent) {
+                return;
+            }
             return {
                 type: "message",
                 role: "assistant",
@@ -74,27 +78,7 @@ export const useResponses = (options?: UseResponsesOptions): UseResponsesResult 
     const [{ messages, status, error }, setSnapshot] = useState<UseResponsesSnapshot>(
         sessionRef.current.getSnapshot(),
     );
-    const transformedMessages = useMemo(() => messages.map(transformMessage), [messages]);
-
-    // Track pending approval requests
-    const pendingApprovals = useMemo(() => {
-        const approvalRequests = messages.filter(
-            (msg): msg is ResponseSessionMessage => 
-                msg.kind === "output" && msg.item.type === "mcp_approval_request"
-        ) as Array<{ item: { id: string } }>;
-
-        const approvalResponses = messages.filter(
-            (msg): msg is ResponseSessionMessage => 
-                msg.kind === "input" && msg.item.type === "mcp_approval_response"
-        ) as Array<{ item: ResponseInputItem.McpApprovalResponse }>;
-
-        const respondedIds = new Set(approvalResponses.map(resp => resp.item.approval_request_id));
-        return new Set(
-            approvalRequests
-                .map(req => req.item.id)
-                .filter(id => !respondedIds.has(id))
-        );
-    }, [messages]);
+    const transformedMessages = useMemo(() => messages.map(transformMessage).filter(message => message !== undefined), [messages]);
 
     const abortRef = useRef<AbortController | null>(null);
     const streamingRef = useRef(false);
@@ -225,16 +209,16 @@ export const useResponses = (options?: UseResponsesOptions): UseResponsesResult 
         async (approvalRequestId: string, approve: boolean) => {
             const session = sessionRef.current!;
             session.addApprovalResponse(approvalRequestId, approve);
-            
+
             // Check if all pending approvals have been handled after this response
             const updatedMessages = session.getMessages();
             const approvalRequests = updatedMessages.filter(
-                (msg): msg is ResponseSessionMessage => 
+                (msg): msg is ResponseSessionMessage =>
                     msg.kind === "output" && msg.item.type === "mcp_approval_request"
             ) as Array<{ item: { id: string } }>;
 
             const approvalResponses = updatedMessages.filter(
-                (msg): msg is ResponseSessionMessage => 
+                (msg): msg is ResponseSessionMessage =>
                     msg.kind === "input" && msg.item.type === "mcp_approval_response"
             ) as Array<{ item: ResponseInputItem.McpApprovalResponse }>;
 
