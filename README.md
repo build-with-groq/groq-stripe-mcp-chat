@@ -23,7 +23,7 @@ This application demonstrates real-time AI chat capabilities using Groq API inte
 - **Frontend:** Next.js 15, React 18, TypeScript, Tailwind CSS
 - **UI Components:** shadcn/ui with Radix UI primitives
 - **Backend:** Next.js API routes with streaming SSE support
-- **AI Infrastructure:** Groq API with Moonshot AI model (`kimi-k2-instruct-0905`)
+- **AI Infrastructure:** Groq API with OpenAI's GPT-OSS-120B model (`openai/gpt-oss-120b`)
 - **Integration:** [Stripe MCP server](https://docs.stripe.com/mcp#remote) for payment operations
 
 ## Quick Start
